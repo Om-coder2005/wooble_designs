@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusForge Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A; /* Dark Slate Blue - Zinc 900 equivalent */
+            color: #E2E8F0; /* Light Gray - Slate 200 equivalent */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 16rem 1fr; /* Sidebar width and main content */
+            min-height: 100vh;
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        /* Sidebar navigation link styles */
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem; /* Rounded corners */
+            transition: all 0.2s ease-in-out;
+            color: #CBD5E1; /* Slate 300 */
+        }
+        .nav-link:hover {
+            background-color: #1A202C; /* Darker on hover */
+            color: #8B5CF6; /* Violet accent */
+            transform: translateX(5px); /* Slight shift on hover */
+        }
+        .nav-link.active {
+            background-color: #1A202C;
+            color: #8B5CF6;
+            border-left: 4px solid #8B5CF6; /* Active indicator */
+            padding-left: calc(1rem - 4px); /* Adjust padding for border */
+            font-weight: 600;
+        }
+
+        /* Card styles */
+        .dashboard-card {
+            background-color: #1A202C; /* Darker background for cards */
+            border: 1px solid #2D3748; /* Subtle border */
+            border-radius: 0.75rem; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .dashboard-card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            border-color: #4C1D95; /* Accent border on hover */
+        }
+
+
+        /* Progress bar styling */
+        .progress-bar-bg {
+            background-color: #2D3748; /* Dark gray for the background */
+            border-radius: 9999px; /* Fully rounded */
+            height: 0.75rem;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            background-image: linear-gradient(to right, #3B82F6, #8B5CF6); /* Blue to Violet gradient */
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Button primary color for consistency */
+        .btn-gradient {
+            background-image: linear-gradient(to right, #3B82F6, #8B5CF6);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+        .btn-gradient:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.6);
+        }
+
+        /* Collapsible section styles */
+        .collapsible-header {
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease-in-out;
+        }
+        .collapsible-header:hover {
+            color: #8B5CF6; /* Violet accent on header hover */
+        }
+        .collapsible-content {
+            max-height: 500px; /* Max height for transition */
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 1;
+        }
+        .collapsible-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.3s ease-in, opacity 0.3s ease-in;
+        }
+        .collapsible-header i { /* Rotate chevron icon */
+            transition: transform 0.3s ease-in-out;
+        }
+        /* Corrected selector for icon rotation */
+        .collapsible-header[aria-expanded="false"] i {
+             transform: rotate(-90deg); /* Rotate up when collapsed */
+        }
+        .collapsible-header[aria-expanded="true"] i {
+             transform: rotate(0deg); /* Default state when expanded */
+        }
+
+
+        /* Custom Scrollbar for activity and chat feeds */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1A202C; /* Darker track */
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4A5568; /* Greyish thumb */
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #6366F1; /* Violet on hover */
+        }
+
+        /* Message box for simulated actions */
+        #messageBox {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4C1D95; /* Violet background */
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        #messageBox.show {
+            opacity: 1;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr; /* Stack vertically on smaller screens */
+                padding: 1rem;
+            }
+            .sidebar {
+                width: 100%;
+                margin-bottom: 1.5rem;
+            }
+            .main-content {
+                grid-template-columns: 1fr; /* Single column layout for main content cards */
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar bg-gray-900 p-6 rounded-xl shadow-lg flex flex-col h-full sticky top-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <i data-lucide="gamepad-2" class="text-emerald-400 w-9 h-9"></i>
+                <h2 class="text-3xl font-extrabold text-white">NexusForge</h2>
+            </div>
+
+            <nav class="flex-grow">
+                <ul class="space-y-3">
+                    <li><a href="#" class="nav-link active"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="swords" class="w-5 h-5 mr-3"></i> My Games</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="users-2" class="w-5 h-5 mr-3"></i> Friends & Squads</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="calendar-check" class="w-5 h-5 mr-3"></i> Events</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="newspaper" class="w-5 h-5 mr-3"></i> News Feed</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="settings" class="w-5 h-5 mr-3"></i> Settings</a></li>
+                </ul>
+            </nav>
+
+            <div class="mt-8 pt-6 border-t border-gray-700">
+                <a href="#" class="nav-link"><i data-lucide="log-out" class="w-5 h-5 mr-3"></i> Log Out</a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-content flex-grow">
+            <!-- Top Bar / Header -->
+            <header class="flex items-center justify-between bg-gray-900 p-6 rounded-xl shadow-lg mb-6">
+                <h1 class="text-3xl font-bold text-white">Hello, Gamer! 👋</h1>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-blue-400 transition duration-200">
+                        <i data-lucide="search" class="w-6 h-6"></i>
+                    </button>
+                    <button class="text-gray-400 hover:text-blue-400 transition duration-200">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://placehold.co/40x40/8B5CF6/ffffff?text=U" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-purple-500">
+                        <span class="font-semibold text-gray-200 hidden md:block">GamerTagPro</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Widgets Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Current Level / XP Card -->
+                <div class="dashboard-card p-6 dashboard-card-hover">
+                    <h3 class="text-xl font-semibold text-white mb-4">Level Progress</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400">Level 42</span>
+                        <span class="font-bold text-blue-400">85% to Level 43</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 85%;"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">1785 / 2100 XP</p>
+                </div>
+
+                <!-- Game Currency Tracker -->
+                <div class="dashboard-card p-6 dashboard-card-hover">
+                    <h3 class="text-xl font-semibold text-white mb-4">Current Resources</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i data-lucide="gem" class="w-5 h-5 text-fuchsia-400 mr-2"></i>
+                                <span class="text-gray-300">Gems:</span>
+                            </div>
+                            <span class="font-bold text-white">1,250</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i data-lucide="coins" class="w-5 h-5 text-yellow-400 mr-2"></i>
+                                <span class="text-gray-300">Gold:</span>
+                            </div>
+                            <span class="font-bold text-white">5,890</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i data-lucide="shard" class="w-5 h-5 text-cyan-400 mr-2"></i>
+                                <span class="text-gray-300">Shards:</span>
+                            </div>
+                            <span class="font-bold text-white">35</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Stats & Quick Launch Card -->
+                <div class="dashboard-card p-6 dashboard-card-hover">
+                    <h3 class="text-xl font-semibold text-white mb-4">Game Stats & Launch</h3>
+                    <div class="mb-4">
+                        <label for="gameSelect" class="block text-gray-400 text-sm mb-2">Select Game:</label>
+                        <select id="gameSelect"
+                                class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <option value="apex">Apex Legends</option>
+                            <option value="valorant">Valorant</option>
+                            <option value="csgo">CS:GO</option>
+                            <option value="lol">League of Legends</option>
+                        </select>
+                    </div>
+                    <div id="gameStatsOutput" class="space-y-2 text-gray-300 mb-6">
+                        <!-- Stats will be dynamically updated here -->
+                        <div class="flex justify-between items-center">
+                            <span>K/D Ratio:</span>
+                            <span class="font-semibold text-white" id="stat-kd">1.57</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Win Rate:</span>
+                            <span class="font-semibold text-white" id="stat-winrate">58%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Current Rank:</span>
+                            <span class="font-semibold text-white" id="stat-rank">Diamond III</span>
+                        </div>
+                    </div>
+                    <!-- Changed onclick to call new function for message box -->
+                    <button class="btn-gradient text-white font-bold py-2 px-6 rounded-md w-full" onclick="showLaunchMessage()">
+                        Launch Game <i data-lucide="play-circle" class="w-5 h-5 inline-block ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content Grid (Recent Activity & Friends/Chat) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Recent Activity Feed -->
+                <div class="dashboard-card p-6">
+                    <h3 class="text-xl font-semibold text-white mb-4">Recent Activity</h3>
+                    <div class="space-y-4 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Activity Item 1 -->
+                        <div class="flex items-start">
+                            <div class="bg-blue-600 rounded-full p-2 text-white mr-3">
+                                <i data-lucide="swords" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><span class="font-semibold text-white">You</span> completed the <span class="text-blue-400">"Heroic Dungeon: Dragon's Lair"</span> with your squad.</p>
+                                <span class="text-gray-500 text-sm">5 minutes ago</span>
+                            </div>
+                        </div>
+                        <!-- Activity Item 2 -->
+                        <div class="flex items-start">
+                            <div class="bg-emerald-600 rounded-full p-2 text-white mr-3">
+                                <i data-lucide="users-2" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><span class="font-semibold text-white">EchoWarrior</span> sent you a friend request.</p>
+                                <span class="text-gray-500 text-sm">15 minutes ago</span>
+                            </div>
+                        </div>
+                        <!-- Activity Item 3 -->
+                        <div class="flex items-start">
+                            <div class="bg-purple-600 rounded-full p-2 text-white mr-3">
+                                <i data-lucide="trophy" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><span class="font-semibold text-white">You</span> unlocked the achievement <span class="text-purple-400">"Master Strategist"</span>.</p>
+                                <span class="text-gray-500 text-sm">1 hour ago</span>
+                            </div>
+                        </div>
+                        <!-- Activity Item 4 -->
+                        <div class="flex items-start">
+                            <div class="bg-orange-600 rounded-full p-2 text-white mr-3">
+                                <i data-lucide="gift" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300">New daily login rewards available!</p>
+                                <span class="text-gray-500 text-sm">3 hours ago</span>
+                            </div>
+                        </div>
+                        <!-- Activity Item 5 -->
+                        <div class="flex items-start">
+                            <div class="bg-red-600 rounded-full p-2 text-white mr-3">
+                                <i data-lucide="sword" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><span class="font-semibold text-white">PixelPaladin</span> defeated <span class="text-red-400">ShadowBane</span> in a ranked match.</p>
+                                <span class="text-gray-500 text-sm">Yesterday</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Friends List & Quick Chat -->
+                <div class="dashboard-card p-6">
+                    <div class="flex justify-between items-center mb-4 collapsible-header" onclick="toggleCollapsible('friendsListContent')" aria-expanded="true">
+                        <h3 class="text-xl font-semibold text-white">Friends Online (3)</h3>
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-gray-400 transition-transform transform rotate-0" id="friendsListToggleIcon"></i>
+                    </div>
+                    <div id="friendsListContent" class="collapsible-content">
+                        <ul class="space-y-3">
+                            <li class="flex items-center justify-between p-2 hover:bg-gray-800 rounded-md transition duration-150 cursor-pointer">
+                                <div class="flex items-center">
+                                    <img src="https://placehold.co/30x30/10B981/ffffff?text=JS" alt="Friend Avatar" class="w-8 h-8 rounded-full mr-3 border-2 border-green-500">
+                                    <span class="text-white font-medium">JungleScout</span>
+                                </div>
+                                <button class="text-blue-400 hover:text-blue-300 text-sm font-medium">Message</button>
+                            </li>
+                            <li class="flex items-center justify-between p-2 hover:bg-gray-800 rounded-md transition duration-150 cursor-pointer">
+                                <div class="flex items-center">
+                                    <img src="https://placehold.co/30x30/3B82F6/ffffff?text=NX" alt="Friend Avatar" class="w-8 h-8 rounded-full mr-3 border-2 border-blue-500">
+                                    <span class="text-white font-medium">NexusNova</span>
+                                </div>
+                                <button class="text-blue-400 hover:text-blue-300 text-sm font-medium">Message</button>
+                            </li>
+                            <li class="flex items-center justify-between p-2 hover:bg-gray-800 rounded-md transition duration-150 cursor-pointer">
+                                <div class="flex items-center">
+                                    <img src="https://placehold.co/30x30/8B5CF6/ffffff?text=VL" alt="Friend Avatar" class="w-8 h-8 rounded-full mr-3 border-2 border-purple-500">
+                                    <span class="text-white font-medium">ValorLady</span>
+                                </div>
+                                <button class="text-blue-400 hover:text-blue-300 text-sm font-medium">Message</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-6 mb-4 collapsible-header" onclick="toggleCollapsible('quickChatContent')" aria-expanded="false">
+                        <h3 class="text-xl font-semibold text-white">Quick Chat</h3>
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-gray-400 transition-transform transform rotate-0" id="quickChatToggleIcon"></i>
+                    </div>
+                    <div id="quickChatContent" class="collapsible-content collapsed">
+                        <div class="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                            <!-- Chat Message 1 -->
+                            <div class="flex items-start">
+                                <img src="https://placehold.co/30x30/10B981/ffffff?text=JS" alt="JungleScout" class="w-8 h-8 rounded-full mr-3">
+                                <div>
+                                    <p class="font-semibold text-white">JungleScout</p>
+                                    <p class="text-gray-300 text-sm">Hey, anyone up for a ranked match?</p>
+                                    <span class="text-gray-500 text-xs">2 minutes ago</span>
+                                </div>
+                            </div>
+                            <!-- Chat Message 2 -->
+                            <div class="flex items-start justify-end">
+                                <div class="text-right">
+                                    <p class="font-semibold text-white">You</p>
+                                    <p class="text-gray-300 text-sm bg-blue-700 p-2 rounded-lg inline-block">I am! What game?</p>
+                                    <span class="text-gray-500 text-xs block">1 minute ago</span>
+                                </div>
+                                <img src="https://placehold.co/30x30/8B5CF6/ffffff?text=U" alt="You" class="w-8 h-8 rounded-full ml-3">
+                            </div>
+                            <!-- Chat Message 3 -->
+                            <div class="flex items-start">
+                                <img src="https://placehold.co/30x30/3B82F6/ffffff?text=NX" alt="NexusNova" class="w-8 h-8 rounded-full mr-3">
+                                <div>
+                                    <p class="font-semibold text-white">NexusNova</p>
+                                    <p class="text-gray-300 text-sm">Count me in for Apex!</p>
+                                    <span class="text-gray-500 text-xs">Just now</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex">
+                            <input type="text" placeholder="Type a message..." class="flex-grow p-3 rounded-l-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 border border-transparent focus:border-blue-500">
+                            <button class="btn-gradient p-3 rounded-r-lg text-white">
+                                <i data-lucide="send" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Box Element -->
+    <div id="messageBox" class="hidden">
+        <i data-lucide="check-circle" class="w-6 h-6 text-white"></i>
+        <span id="messageBoxText"></span>
+    </div>
+
+    <!-- JavaScript for Interactive Elements -->
+    <script>
+        // Initialize Lucide icons on page load
+        lucide.createIcons();
+
+        // --- Collapsible Sections Logic ---
+        /**
+         * Toggles the visibility of a collapsible content section.
+         * Adjusts the max-height and opacity for smooth transitions.
+         * Toggles the aria-expanded attribute on the header.
+         * @param {string} contentId - The ID of the content div to collapse/expand.
+         */
+        function toggleCollapsible(contentId) {
+            const content = document.getElementById(contentId);
+            const header = content.previousElementSibling; // Get the header directly before the content
+            const isCollapsed = content.classList.contains('collapsed');
+
+            if (isCollapsed) {
+                // Expand
+                content.classList.remove('collapsed');
+                header.setAttribute('aria-expanded', 'true');
+            } else {
+                // Collapse
+                content.classList.add('collapsed');
+                header.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        // --- Game Stats & Quick Launch Logic ---
+        // Data structure to hold game-specific statistics
+        const gameData = {
+            apex: { kd: '1.57', winrate: '58%', rank: 'Diamond III' },
+            valorant: { kd: '1.20', winrate: '52%', rank: 'Gold II' },
+            csgo: { kd: '0.95', winrate: '45%', rank: 'Silver Elite' },
+            lol: { kd: '2.10', winrate: '65%', rank: 'Platinum IV' },
+        };
+
+        /**
+         * Updates the displayed game statistics based on the selected game from the dropdown.
+         */
+        function updateGameStats() {
+            const selectedGame = document.getElementById('gameSelect').value;
+            const stats = gameData[selectedGame];
+
+            if (stats) {
+                document.getElementById('stat-kd').textContent = stats.kd;
+                document.getElementById('stat-winrate').textContent = stats.winrate;
+                document.getElementById('stat-rank').textContent = stats.rank;
+            } else {
+                // Fallback if no stats found (shouldn't happen with predefined data)
+                document.getElementById('stat-kd').textContent = 'N/A';
+                document.getElementById('stat-winrate').textContent = 'N/A';
+                document.getElementById('stat-rank').textContent = 'N/A';
+            }
+        }
+
+        /**
+         * Displays a non-blocking message box for simulated actions (e.g., launching a game).
+         * The message box appears, shows the message, and then fades out.
+         */
+        function showLaunchMessage() {
+            const selectedGameName = document.getElementById('gameSelect').options[document.getElementById('gameSelect').selectedIndex].text;
+            const messageBox = document.getElementById('messageBox');
+            const messageBoxText = document.getElementById('messageBoxText');
+
+            messageBoxText.textContent = `Launching ${selectedGameName}... (Simulated)`;
+            messageBox.classList.remove('hidden');
+            messageBox.classList.add('show');
+
+            // Hide the message box after 3 seconds
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+                // Use a small delay for display:none to allow transition to complete
+                setTimeout(() => {
+                    messageBox.classList.add('hidden');
+                }, 300); // Matches opacity transition duration
+            }, 3000); // Message visible for 3 seconds
+        }
+
+        // --- Initialization on Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial state for Quick Chat to collapsed and Friends List to expanded
+            const quickChatContent = document.getElementById('quickChatContent');
+            const quickChatHeader = quickChatContent.previousElementSibling;
+            quickChatContent.classList.add('collapsed');
+            quickChatHeader.setAttribute('aria-expanded', 'false');
+
+            const friendsListContent = document.getElementById('friendsListContent');
+            const friendsListHeader = friendsListContent.previousElementSibling;
+            friendsListContent.classList.remove('collapsed'); // Ensure it's expanded if it was initially collapsed in HTML
+            friendsListHeader.setAttribute('aria-expanded', 'true');
+
+            // Add event listener for game selection change
+            document.getElementById('gameSelect').addEventListener('change', updateGameStats);
+
+            // Initialize game stats display with the default selected game
+            updateGameStats();
+        });
+    </script>
+</body>
+</html>

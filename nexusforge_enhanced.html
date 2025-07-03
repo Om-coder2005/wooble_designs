@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusForge - Your Gaming Community Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --neon-cyan: #00f5ff;
+            --neon-purple: #bf00ff;
+            --neon-green: #39ff14;
+            --dark-bg: #0a0a0f;
+            --card-bg: #1a1a2e;
+            --accent-blue: #16213e;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        
+        .orbitron {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, rgba(191, 0, 255, 0.1) 50%, rgba(57, 255, 20, 0.1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%2300f5ff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: gridFloat 20s ease-in-out infinite;
+        }
+        
+        @keyframes gridFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan), 0 0 60px var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 245, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--neon-green);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(57, 255, 20, 0.4);
+        }
+        
+        .feature-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.2);
+        }
+        
+        .game-card {
+            background: rgba(26, 26, 46, 0.9);
+            border: 1px solid rgba(191, 0, 255, 0.3);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(191, 0, 255, 0.2), rgba(0, 245, 255, 0.2));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .game-card:hover::after {
+            opacity: 1;
+        }
+        
+        .game-card:hover {
+            transform: scale(1.05) translateY(-5px);
+            border-color: var(--neon-purple);
+            box-shadow: 0 15px 35px rgba(191, 0, 255, 0.3);
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 10px var(--neon-green); }
+            to { box-shadow: 0 0 30px var(--neon-green); }
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .testimonial-card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(57, 255, 20, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            border-color: var(--neon-green);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(57, 255, 20, 0.2);
+        }
+        
+        .navbar-glass {
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+        }
+        
+        .stats-counter {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .mobile-menu {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-bg {
+                background-attachment: scroll;
+            }
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-full h-full z-50 md:hidden">
+        <div class="flex flex-col items-center justify-center h-full space-y-8">
+            <button id="closeMobileMenu" class="absolute top-6 right-6 text-white">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <a href="#" class="text-2xl text-gray-300 hover:text-cyan-400 transition duration-300">Home</a>
+            <a href="#" class="text-2xl text-gray-300 hover:text-cyan-400 transition duration-300">Games</a>
+            <a href="#" class="text-2xl text-gray-300 hover:text-cyan-400 transition duration-300">Community</a>
+            <a href="#" class="text-2xl text-gray-300 hover:text-cyan-400 transition duration-300">Events</a>
+            <a href="#" class="text-2xl text-gray-300 hover:text-cyan-400 transition duration-300">News</a>
+            <button class="btn-primary text-white font-semibold py-3 px-8 rounded-lg mt-8">Sign Up</button>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="navbar-glass fixed w-full z-40 py-4">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-3 text-3xl font-black orbitron text-white">
+                <div class="relative">
+                    <i data-lucide="gamepad-2" class="text-cyan-400 w-10 h-10 pulse-glow"></i>
+                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+                </div>
+                <span class="text-glow">NexusForge</span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-300 hover:text-cyan-400 transition duration-300 font-medium relative group">
+                    Home
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#" class="text-gray-300 hover:text-cyan-400 transition duration-300 font-medium relative group">
+                    Games
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#" class="text-gray-300 hover:text-cyan-400 transition duration-300 font-medium relative group">
+                    Community
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#" class="text-gray-300 hover:text-cyan-400 transition duration-300 font-medium relative group">
+                    Events
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#" class="text-gray-300 hover:text-cyan-400 transition duration-300 font-medium relative group">
+                    News
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </div>
+
+            <!-- Auth Buttons -->
+            <div class="flex items-center space-x-4">
+                <button class="hidden md:block text-gray-300 hover:text-cyan-400 font-medium py-2 px-4 rounded-lg transition duration-300">
+                    Log In
+                </button>
+                <button class="btn-primary text-white font-semibold py-2 px-6 rounded-lg">
+                    Sign Up
+                </button>
+                <button id="mobileMenuToggle" class="md:hidden text-white">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-bg text-white py-20 md:py-32 flex items-center justify-center min-h-screen pt-24 relative">
+            <div class="container mx-auto px-4 text-center relative z-10">
+                <div class="floating-element">
+                    <h1 class="text-4xl md:text-6xl lg:text-8xl font-black orbitron leading-tight mb-6 tracking-wide text-glow">
+                        Connect, Play, <span class="text-cyan-400">Conquer</span>.
+                    </h1>
+                </div>
+                <p class="text-lg md:text-xl max-w-4xl mx-auto mb-12 opacity-90 leading-relaxed">
+                    Your ultimate hub for gamers worldwide. Find your squad, stay updated, and dominate together in the most advanced gaming community platform.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
+                    <button class="btn-primary text-white font-bold py-4 px-12 rounded-full text-lg orbitron">
+                        <i data-lucide="zap" class="w-5 h-5 inline mr-2"></i>
+                        Join the Battle
+                    </button>
+                    <button class="btn-secondary font-bold py-4 px-12 rounded-full text-lg orbitron">
+                        <i data-lucide="compass" class="w-5 h-5 inline mr-2"></i>
+                        Explore Games
+                    </button>
+                </div>
+                
+                <!-- Enhanced Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <div class="feature-card p-6 rounded-xl text-center">
+                        <div class="text-cyan-400 mb-2">
+                            <i data-lucide="users-round" class="w-12 h-12 mx-auto"></i>
+                        </div>
+                        <div class="text-3xl font-bold orbitron stats-counter text-cyan-400" data-target="500000">0</div>
+                        <div class="text-sm text-gray-400 mt-1">Active Members</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-xl text-center">
+                        <div class="text-purple-400 mb-2">
+                            <i data-lucide="gamepad-2" class="w-12 h-12 mx-auto"></i>
+                        </div>
+                        <div class="text-3xl font-bold orbitron stats-counter text-purple-400" data-target="1000">0</div>
+                        <div class="text-sm text-gray-400 mt-1">Games Supported</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-xl text-center">
+                        <div class="text-green-400 mb-2">
+                            <i data-lucide="calendar" class="w-12 h-12 mx-auto"></i>
+                        </div>
+                        <div class="text-3xl font-bold orbitron stats-counter text-green-400" data-target="50">0</div>
+                        <div class="text-sm text-gray-400 mt-1">Weekly Events</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator">
+                <i data-lucide="chevron-down" class="w-6 h-6 text-cyan-400"></i>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-20 md:py-32 relative">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold orbitron text-white mb-6 text-glow">
+                        Unleash Your Gaming <span class="text-purple-400">Potential</span>
+                    </h2>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                        NexusForge offers cutting-edge features designed to revolutionize your gaming experience and connect you with like-minded players worldwide.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Enhanced Feature Cards -->
+                    <div class="feature-card p-8 rounded-2xl shadow-2xl">
+                        <div class="bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-2xl p-4 mb-6 w-fit">
+                            <i data-lucide="message-square-text" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold orbitron text-white mb-4">Vibrant Forums</h3>
+                        <p class="text-gray-400 leading-relaxed">Join discussions, share strategies, and connect with fellow gamers across all titles with our advanced forum system.</p>
+                        <div class="mt-6 pt-4 border-t border-gray-700">
+                            <span class="text-cyan-400 text-sm font-medium">
+                                <i data-lucide="trending-up" class="w-4 h-4 inline mr-1"></i>
+                                Most Popular Feature
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="feature-card p-8 rounded-2xl shadow-2xl">
+                        <div class="bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-2xl p-4 mb-6 w-fit">
+                            <i data-lucide="users-2" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold orbitron text-white mb-4">Smart Matchmaking</h3>
+                        <p class="text-gray-400 leading-relaxed">AI-powered team finding system that matches you with players based on skill level, playstyle, and availability.</p>
+                        <div class="mt-6 pt-4 border-t border-gray-700">
+                            <span class="text-purple-400 text-sm font-medium">
+                                <i data-lucide="cpu" class="w-4 h-4 inline mr-1"></i>
+                                AI Enhanced
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="feature-card p-8 rounded-2xl shadow-2xl">
+                        <div class="bg-gradient-to-br from-green-600 to-teal-600 text-white rounded-2xl p-4 mb-6 w-fit">
+                            <i data-lucide="calendar-check" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold orbitron text-white mb-4">Esports & Events</h3>
+                        <p class="text-gray-400 leading-relaxed">Stay updated on tournaments, community events, and competitive play with real-time notifications and scheduling.</p>
+                        <div class="mt-6 pt-4 border-t border-gray-700">
+                            <span class="text-green-400 text-sm font-medium">
+                                <i data-lucide="bell" class="w-4 h-4 inline mr-1"></i>
+                                Real-time Updates
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="feature-card p-8 rounded-2xl shadow-2xl">
+                        <div class="bg-gradient-to-br from-red-600 to-orange-600 text-white rounded-2xl p-4 mb-6 w-fit">
+                            <i data-lucide="newspaper" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold orbitron text-white mb-4">Game Intel Hub</h3>
+                        <p class="text-gray-400 leading-relaxed">Get the freshest news, patch analysis, meta breakdowns, and professional guides for your favorite games.</p>
+                        <div class="mt-6 pt-4 border-t border-gray-700">
+                            <span class="text-red-400 text-sm font-medium">
+                                <i data-lucide="zap" class="w-4 h-4 inline mr-1"></i>
+                                Lightning Fast
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="feature-card p-8 rounded-2xl shadow-2xl">
+                        <div class="bg-gradient-to-br from-yellow-600 to-orange-600 text-white rounded-2xl p-4 mb-6 w-fit">
+                            <i data-lucide="user-square" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold orbitron text-white mb-4">Pro Profiles</h3>
+                        <p class="text-gray-400 leading-relaxed">Showcase your achievements, track your progress, and discover players with complementary skills and interests.</p>
+                        <div class="mt-6 pt-4 border-t border-gray-700">
+                            <span class="text-yellow-400 text-sm font-medium">
+                                <i data-lucide="star" class="w-4 h-4 inline mr-1"></i>
+                                Achievement System
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="feature-card p-8 rounded-2xl shadow-2xl">
+                        <div class="bg-gradient-to-br from-cyan-600 to-blue-600 text-white rounded-2xl p-4 mb-6 w-fit">
+                            <i data-lucide="monitor-play" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold orbitron text-white mb-4">Stream Central</h3>
+                        <p class="text-gray-400 leading-relaxed">Integrated streaming platform with content discovery, live chat, and community-driven highlight reels.</p>
+                        <div class="mt-6 pt-4 border-t border-gray-700">
+                            <span class="text-cyan-400 text-sm font-medium">
+                                <i data-lucide="play" class="w-4 h-4 inline mr-1"></i>
+                                HD Streaming
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Games Section -->
+        <section class="py-20 md:py-32">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold orbitron text-white mb-6 text-glow">
+                        Popular Games & <span class="text-cyan-400">Communities</span>
+                    </h2>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                        Dive into the most active communities and trending titles on NexusForge. Join millions of players in epic gaming adventures.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Enhanced Game Cards -->
+                    <div class="game-card rounded-2xl overflow-hidden shadow-2xl">
+                        <div class="relative">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRldfa1zYqVd_unMfyRfjaz9XMPL7PXuJY8Q&s" alt="Cyberpunk 2077" class="w-full h-48 object-cover">
+                            <div class="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                                LIVE
+                            </div>
+                        </div>
+                        <div class="p-6 relative z-10">
+                            <h3 class="text-xl font-bold orbitron text-white mb-2">Cyberpunk 2077</h3>
+                            <p class="text-yellow-400 text-sm mb-3 font-medium">180K+ Active Members</p>
+                            <div class="flex items-center justify-between">
+                                <button class="text-yellow-400 hover:text-yellow-300 text-sm font-medium flex items-center group">
+                                    Join Community 
+                                    <i data-lucide="arrow-right" class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                                <div class="flex space-x-1">
+                                    <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                                    <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                                    <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-card rounded-2xl overflow-hidden shadow-2xl">
+                        <div class="relative">
+                            <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2024/03/Apex_legends_logo.png" alt="Apex Legends" class="w-full h-48 object-cover">
+                            <div class="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                                TRENDING
+                            </div>
+                        </div>
+                        <div class="p-6 relative z-10">
+                            <h3 class="text-xl font-bold orbitron text-white mb-2">Apex Legends</h3>
+                            <p class="text-green-400 text-sm mb-3 font-medium">220K+ Active Members</p>
+                            <div class="flex items-center justify-between">
+                                <button class="text-green-400 hover:text-green-300 text-sm font-medium flex items-center group">
+                                    Join Community 
+                                    <i data-lucide="arrow-right" class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                                <div class="flex space-x-1">
+                                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View All Games Button -->
+                <div class="text-center mt-12">
+                    <button class="btn-secondary font-bold py-4 px-12 rounded-full text-lg orbitron">
+                        <i data-lucide="grid-3x3" class="w-5 h-5 inline mr-2"></i>
+                        View All Games
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="py-20 md:py-32">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold orbitron text-white mb-6 text-glow">
+                        What <span class="text-green-400">Gamers</span> Are Saying
+                    </h2>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                        Real stories from our thriving community members who've found their gaming home at NexusForge.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Enhanced Testimonial Cards -->
+                    <div class="testimonial-card p-8 rounded-2xl shadow-2xl relative">
+                        <div class="absolute top-4 right-4 text-yellow-400">
+                            <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex text-yellow-400 mb-4">
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <p class="text-gray-300 italic leading-relaxed">
+                                "Finally found a place where I can truly connect with other players who love the same niche games as me. The AI matchmaking is incredible!"
+                            </p>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face" alt="GamerGuy88" class="w-12 h-12 rounded-full border-2 border-cyan-400">
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-gray-900"></div>
+                            </div>
+                            <div class="ml-4">
+                                <p class="font-bold orbitron text-white">BeastBoy</p>
+                                <p class="text-sm text-cyan-400">Competitive FPS Player</p>
+                                <p class="text-xs text-gray-500">Member since 2023</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card p-8 rounded-2xl shadow-2xl relative">
+                        <div class="absolute top-4 right-4 text-yellow-400">
+                            <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex text-yellow-400 mb-4">
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <p class="text-gray-300 italic leading-relaxed">
+                                "NexusForge has revolutionized how I stay updated with gaming news and events. The real-time notifications are a game-changer!"
+                            </p>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b8e5?w=60&h=60&fit=crop&crop=face" alt="XenaRaider" class="w-12 h-12 rounded-full border-2 border-purple-400">
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-gray-900"></div>
+                            </div>
+                            <div class="ml-4">
+                                <p class="font-bold orbitron text-white">BroRaider</p>
+                                <p class="text-sm text-purple-400">RPG Enthusiast</p>
+                                <p class="text-xs text-gray-500">Member since 2022</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card p-8 rounded-2xl shadow-2xl relative">
+                        <div class="absolute top-4 right-4 text-yellow-400">
+                            <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex text-yellow-400 mb-4">
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <p class="text-gray-300 italic leading-relaxed">
+                                "The community here is amazing! Supportive, welcoming, and always ready to help. Best gaming platform I've ever used."
+                            </p>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face" alt="LootMaster" class="w-12 h-12 rounded-full border-2 border-green-400">
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-gray-900"></div>
+                            </div>
+                            <div class="ml-4">
+                                <p class="font-bold orbitron text-white">LootMaster</p>
+                                <p class="text-sm text-green-400">MMO Strategist</p>
+                                <p class="text-xs text-gray-500">Member since 2021</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trust Indicators -->
+                <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div class="feature-card p-6 rounded-xl">
+                        <div class="text-3xl font-bold orbitron text-cyan-400 mb-2">4.9★</div>
+                        <div class="text-sm text-gray-400">User Rating</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-xl">
+                        <div class="text-3xl font-bold orbitron text-green-400 mb-2">99.9%</div>
+                        <div class="text-sm text-gray-400">Uptime</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-xl">
+                        <div class="text-3xl font-bold orbitron text-purple-400 mb-2">24/7</div>
+                        <div class="text-sm text-gray-400">Support</div>
+                    </div>
+                    <div class="feature-card p-6 rounded-xl">
+                        <div class="text-3xl font-bold orbitron text-yellow-400 mb-2">100K+</div>
+                        <div class="text-sm text-gray-400">Reviews</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="py-20 md:py-32 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-cyan-600/10 via-purple-600/10 to-green-600/10"></div>
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-4xl md:text-6xl font-black orbitron text-white mb-8 text-glow">
+                        Ready to Join the <span class="text-cyan-400">Ultimate</span> Gaming Community?
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-12 leading-relaxed">
+                        Sign up now and start connecting with millions of gamers worldwide. Your next epic adventure awaits!
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
+                        <button class="btn-primary text-white font-bold py-4 px-12 rounded-full text-lg orbitron relative overflow-hidden group">
+                            <span class="relative z-10">
+                                <i data-lucide="rocket" class="w-5 h-5 inline mr-2"></i>
+                                Create Your Account Free
+                            </span>
+                        </button>
+                        <button class="btn-secondary font-bold py-4 px-12 rounded-full text-lg orbitron">
+                            <i data-lucide="play-circle" class="w-5 h-5 inline mr-2"></i>
+                            Watch Demo
+                        </button>
+                    </div>
+
+                    <!-- Quick Benefits -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left max-w-3xl mx-auto">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-black"></i>
+                            </div>
+                            <span class="text-gray-300">Free Forever Plan</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-black"></i>
+                            </div>
+                            <span class="text-gray-300">Instant Community Access</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-black"></i>
+                            </div>
+                            <span class="text-gray-300">No Setup Required</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Enhanced Footer -->
+    <footer class="bg-gray-950 text-gray-300 py-16 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <!-- Brand Section -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i data-lucide="gamepad-2" class="text-cyan-400 w-8 h-8"></i>
+                        <span class="text-2xl font-black orbitron text-white">NexusForge</span>
+                    </div>
+                    <p class="text-gray-400 mb-6 leading-relaxed max-w-md">
+                        The world's most advanced gaming community platform. Connecting millions of gamers worldwide through cutting-edge technology and shared passion.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-cyan-400 hover:text-black transition-all duration-300">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-purple-400 hover:text-black transition-all duration-300">
+                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-400 hover:text-black transition-all duration-300">
+                            <i data-lucide="youtube" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-indigo-400 hover:text-black transition-all duration-300">
+                            <i data-lucide="twitch" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-bold orbitron text-white mb-4">Platform</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300 flex items-center group">
+                            <i data-lucide="arrow-right" class="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform"></i>
+                            Gaming Communities
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300 flex items-center group">
+                            <i data-lucide="arrow-right" class="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform"></i>
+                            Esports Hub
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300 flex items-center group">
+                            <i data-lucide="arrow-right" class="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform"></i>
+                            Stream Center
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300 flex items-center group">
+                            <i data-lucide="arrow-right" class="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform"></i>
+                            Game Library
+                        </a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h3 class="text-lg font-bold orbitron text-white mb-4">Support</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300 flex items-center group">
+                            <i data-lucide="arrow-right" class="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform"></i>
+                            Help Center
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300 flex items-center group">
+                            <i data-lucide="arrow-right" class="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform"></i>
+                            Community Guidelines
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300 flex items-center group">
+                            <i data-lucide="arrow-right" class="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform"></i>
+                            Privacy Policy
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition duration-300 flex items-center group">
+                            <i data-lucide="arrow-right" class="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform"></i>
+                            Terms of Service
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-500 mb-4 md:mb-0">
+                    &copy; 2024 NexusForge. All rights reserved. Built for gamers, by gamers.
+                </div>
+                <div class="flex items-center space-x-6 text-sm">
+                    <span class="text-gray-400">🔒 SSL Secured</span>
+                    <span class="text-gray-400">⚡ 99.9% Uptime</span>
+                    <span class="text-gray-400">🌍 Global CDN</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Enhanced JavaScript -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+
+        mobileMenuToggle?.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMobileMenu?.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Stats Counter Animation
+        function animateCounter(element, target, duration = 2000) {
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current).toLocaleString();
+            }, 16);
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const element = entry.target;
+                    
+                    // Animate counters
+                    if (element.classList.contains('stats-counter')) {
+                        const target = parseInt(element.dataset.target);
+                        animateCounter(element, target);
+                        observer.unobserve(element);
+                    }
+
+                    // Add entrance animations
+                    if (element.classList.contains('feature-card') || 
+                        element.classList.contains('game-card') || 
+                        element.classList.contains('testimonial-card')) {
+                        element.style.opacity = '0';
+                        element.style.transform = 'translateY(30px)';
+                        element.style.transition = 'all 0.6s ease';
+                        
+                        setTimeout(() => {
+                            element.style.opacity = '1';
+                            element.style.transform = 'translateY(0)';
+                        }, 100);
+                        
+                        observer.unobserve(element);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.stats-counter, .feature-card, .game-card, .testimonial-card').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        let lastScrollY = window.scrollY;
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('header');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(10, 10, 15, 0.95)';
+                navbar.style.backdropFilter = 'blur(20px)';
+            } else {
+                navbar.style.background = 'rgba(10, 10, 15, 0.9)';
+                navbar.style.backdropFilter = 'blur(20px)';
+            }
+            lastScrollY = window.scrollY;
+        });
+
+        // Add subtle parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-bg');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+
+        // Enhanced button interactions
+        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.05)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add click effects
+        document.querySelectorAll('button, .game-card, .feature-card').forEach(element => {
+            element.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(0, 245, 255, 0.3)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.left = e.offsetX - 10 + 'px';
+                ripple.style.top = e.offsetY - 10 + 'px';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                ripple.style.pointerEvents = 'none';
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> 
